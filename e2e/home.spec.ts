@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('home page', () => {
-  test('shows the hero copy, about facts and the projects list', async ({ page }) => {
+  test('shows the hero copy, the about section and the contact links', async ({ page }) => {
     await page.goto('/');
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
@@ -9,9 +9,7 @@ test.describe('home page', () => {
     );
     await expect(page.getByRole('link', { name: 'Who am I?' })).toHaveAttribute('href', '#about');
     await expect(page.getByRole('region', { name: /I’m Melad/ })).toBeVisible();
-    await expect(
-      page.getByRole('region', { name: 'Work in progress.' }).getByRole('listitem'),
-    ).toHaveCount(3);
+    await expect(page.getByRole('navigation', { name: 'Contact' })).toBeAttached();
   });
 
   test('mounts the scene and lets the visitor pause and resume it', async ({ page }) => {

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { projectSchema, workInProgressSchema, workPageSchema, type ProjectStatus } from './schemas';
+import { projectSchema, workPageSchema, type ProjectStatus } from './schemas';
 
 /** The visible label for each status; used by the Home list and by the Work meta rows. */
 export const STATUS_LABEL: Record<ProjectStatus, string> = { 'in-progress': 'In progress' };
 
 /*
- * One array feeds both pages: Home's "Work in progress" list reads name/summary/status,
- * Work's articles read meta/proposition/description/decisions.
+ * One array feeds the Work page: the cards read name/summary/diagram and the first facts,
+ * the articles read meta/proposition/description/decisions.
  */
 export const projects = z.array(projectSchema).parse([
   {
@@ -122,9 +122,4 @@ export const workPage = workPageSchema.parse({
   lede: 'Two multi-tenant platforms and one personal project. For each one: what it does, my part in it, and the decisions that shaped it.',
   indexLabel: 'Projects on this page',
   decisionsLabel: 'Decisions',
-});
-
-export const workInProgress = workInProgressSchema.parse({
-  title: 'Work in progress.',
-  aside: "Three products I'm building now",
 });

@@ -64,7 +64,7 @@ export const decisionSchema = z.strictObject({ lead: text, text });
 export const projectSchema = z.strictObject({
   id: z.string().regex(/^[a-z][a-z-]*$/, 'id is used as an anchor'),
   name: text,
-  /** One line for the Home "Work in progress" list. */
+  /** One line for the project's card on the Work page. */
   summary: text,
   status: projectStatusSchema,
   /** `small` renders name and proposition only (Your Guide). */
@@ -86,8 +86,6 @@ export const workPageSchema = z.strictObject({
   indexLabel: text,
   decisionsLabel: text,
 });
-
-export const workInProgressSchema = z.strictObject({ title: text, aside: text });
 
 export const contactSchema = z.strictObject({
   label: text,
@@ -135,7 +133,6 @@ export type ProjectMeta = z.infer<typeof projectMetaSchema>;
 export type Decision = z.infer<typeof decisionSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type WorkPage = z.infer<typeof workPageSchema>;
-export type WorkInProgress = z.infer<typeof workInProgressSchema>;
 export type Contact = z.infer<typeof contactSchema>;
 export type StoryParagraph = z.infer<typeof storyParagraphSchema>;
 export type StoryStep = z.infer<typeof storyStepSchema>;
