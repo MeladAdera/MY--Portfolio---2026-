@@ -90,6 +90,10 @@ export const contactSchema = z.strictObject({
   pitch: text,
   copy: z.strictObject({ idle: text, copied: text, failed: text }),
   status: z.strictObject({ copied: text, failed: text }),
+  /** Sentence after the place name; `{time}` and `{zone}` are filled by the live clock. */
+  clock: text.refine((s) => s.includes('{time}') && s.includes('{zone}'), {
+    message: 'must contain {time} and {zone}',
+  }),
 });
 
 export const storyParagraphSchema = z.strictObject({
