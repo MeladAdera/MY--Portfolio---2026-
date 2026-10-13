@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work — Melad Adera</title>
+<meta name="description" content="Inventory Distribution, SportBooker and Your Guide: what each project does, my part in it, and the decisions behind it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400&display=swap">
+<link rel="stylesheet" href="css/work.css">
+</head>
+<body>
+<div class="st-root w2">
+<header class="st-nav">
+<a href="index.html" style="padding: 10px 0; font-family: 'Literata', serif; font-weight: 600; font-size: 17px; letter-spacing: -0.01em; text-decoration: none">Melad Adera</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 0 24px; font-size: 15px">
+<a href="work.html" aria-current="page" style="padding: 12px 0; text-decoration: none; border-bottom: 1px solid var(--st-accent)">Work</a>
+<a href="story.html" style="padding: 12px 0; text-decoration: none; color: var(--st-muted)">Story</a>
+<a href="work.html#contact" style="padding: 12px 0; text-decoration: none; color: var(--st-muted)">Contact</a>
+</nav>
+</header>
+<main>
+<header class="st-wrap w2-open">
+<p class="st-kicker">01 — Work</p>
+<h1 class="w2-h">Three things I’m building.</h1>
+<p class="w2-lede">Two multi-tenant platforms and one personal project. For each one: what it does, my part in it, and the decisions that shaped it.</p>
+<nav class="w2-index" aria-label="Projects on this page">
+<a href="#inventory">Inventory Distribution</a>
+<a href="#sportbooker">SportBooker</a>
+<a href="#your-guide">Your Guide</a>
+<a href="#contact">Contact</a>
+</nav>
+</header>
+
+<article id="inventory" class="st-wrap w2-proj" aria-labelledby="w2-inv">
+<dl class="w2-meta">
+<div><dt>Role</dt><dd>Full Stack Developer</dd></div>
+<div><dt>Period</dt><dd>May 2026 – present</dd></div>
+<div><dt>Status</dt><dd>In progress</dd></div>
+<div><dt>Built with</dt><dd>React, Next.js, TypeScript, Tailwind CSS, TanStack Query, Zustand, NestJS, PostgreSQL, JWT, REST APIs, IndexedDB, Docker</dd></div>
+</dl>
+<div class="w2-main">
+<h2 id="w2-inv" class="w2-name">Inventory Distribution</h2>
+<p class="w2-prop">A central warehouse and many retail shops, running on one multi-tenant platform.</p>
+<p class="w2-text">It covers inventory, distribution from the warehouse, sales in the shops, customer credit and business analytics, for warehouse administrators, shop owners and employees.</p>
+<h3 class="w2-label">Decisions</h3>
+<ul class="w2-decs">
+<li><em>Stock moves between places.</em> Orders go through creation, approval, shipment and receipt, and every stock movement is saved in one transaction.</li>
+<li><em>Customers buy on credit and pay in parts.</em> Partial payments, debt tracking, FIFO payment allocation, aging reports and an immutable financial ledger.</li>
+<li><em>The network in the shops is unreliable.</em> An offline-first PWA: sales and stock changes are saved in IndexedDB, queued, and synced with conflict resolution when the connection returns.</li>
+<li><em>Prices change, but old reports must stay true.</em> Weighted-average costing with immutable transaction snapshots, so past sales and profit reports stay accurate.</li>
+<li><em>Every action has to be secure and traceable.</em> Role-based authorization, audit logging, multilingual support, analytics dashboards and optimized backend services.</li>
+</ul>
+</div>
+</article>
+
+<article id="sportbooker" class="st-wrap w2-proj" aria-labelledby="w2-sb">
+<dl class="w2-meta">
+<div><dt>Role</dt><dd>Full Stack Developer, contributing to the platform</dd></div>
+<div><dt>For</dt><dd>Syria Sport</dd></div>
+<div><dt>Period</dt><dd>Jan – Apr 2026</dd></div>
+<div><dt>Built with</dt><dd>React, Vite, TypeScript, Tailwind CSS, Zustand, NestJS, PostgreSQL, REST APIs</dd></div>
+</dl>
+<div class="w2-main">
+<h2 id="w2-sb" class="w2-name">SportBooker</h2>
+<p class="w2-prop">Sports venue booking for players, venue operators and administrators.</p>
+<p class="w2-text">A multi-tenant platform serving the Syrian community through Syria Sport, where people manage bookings, schedules and sports facilities. I worked on both the frontend and the backend.</p>
+<h3 class="w2-label">Decisions</h3>
+<ul class="w2-decs">
+<li><em>Many organizations, one platform.</em> I contributed to a multi-tenant architecture that uses subdomains to keep each organization separate while they share one application.</li>
+<li><em>Four kinds of users with different rights.</em> Role-based access control and authentication workflows for administrators, operators, staff and players.</li>
+<li><em>Three audiences, on desktop and on phones.</em> Responsive interfaces built from reusable React components, with centralized Zustand state.</li>
+<li><em>Everything comes from the API.</em> REST integrations for authentication, bookings, scheduling, user management and tenant-specific data.</li>
+<li><em>Work on both sides.</em> NestJS services, PostgreSQL database design, migrations and seed data.</li>
+</ul>
+</div>
+</article>
+
+<article id="your-guide" class="st-wrap w2-proj w2-proj--small" aria-labelledby="w2-yg">
+<dl class="w2-meta">
+<div><dt>Type</dt><dd>Personal project</dd></div>
+<div><dt>Status</dt><dd>In progress</dd></div>
+</dl>
+<div class="w2-main">
+<h2 id="w2-yg" class="w2-name">Your Guide</h2>
+<p class="w2-prop">A task, time and study management app.</p>
+</div>
+</article>
+
+<section id="contact" class="st-wrap w2-close" aria-labelledby="w2-contact">
+<h2 id="w2-contact" class="w2-close-label">Contact</h2>
+<div class="w2-main">
+<p class="w2-pitch">I’m looking for a team where I can keep building and learning. Email reaches me fastest.</p>
+<p class="w2-mailrow"><a class="w2-mail" href="mailto:dev.melad.adera@gmail.com" data-email>dev.melad.adera@gmail.com</a><button type="button" class="w2-copy" data-copy>Copy</button></p>
+<p class="w2-links"><a href="https://www.linkedin.com/in/melad-adera">LinkedIn</a><a href="https://github.com/MeladAdera">GitHub</a></p>
+<p class="w2-place">Lattakia, Syria<span data-clock></span></p>
+<p class="st-sr" role="status" data-status></p>
+</div>
+</section>
+</main>
+<footer class="st-wrap w2-foot"><p>© 2026 Melad Adera</p></footer>
+</div>
+
+<script src="js/work.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+html{--bd-bg:#EEEAE3;--bd-bg-rgb:238,234,227;--bd-surface:#F5F2EC;--bd-fg:#16171A;--bd-muted:#3F4146;--bd-faint:#5E5A53;--bd-line:#DCD6CC;--bd-btn-bg:#16171A;--bd-btn-fg:#F2EFEA}
+body{margin:0;background:var(--bd-bg)}
+.bd-root{background:var(--bd-bg);color:var(--bd-fg);font-family:'Instrument Sans',sans-serif;font-size:16px;line-height:1.6}
+.bd-root a{color:var(--bd-fg)}
+.bd-root a:focus-visible,.bd-root button:focus-visible{outline:2px solid #4C9BEA;outline-offset:3px}
+.bd-hero{position:relative;height:860px;overflow:hidden;background:var(--bd-bg)}
+.bd-stage{position:absolute;inset:0;margin:0}
+.bd-veil{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(var(--bd-bg-rgb),0.88) 0%,rgba(var(--bd-bg-rgb),0.66) 34%,rgba(var(--bd-bg-rgb),0) 52%)}
+.bd-copy{position:absolute;left:max(32px,calc((100% - 1200px) / 2 + 32px));top:196px;width:min(520px,40%)}
+.bd-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.bd-pause{position:absolute;right:20px;bottom:20px;height:44px;padding:0 16px;border:1px solid var(--bd-line);background:rgba(var(--bd-bg-rgb),0.82);color:var(--bd-fg);font-family:'Instrument Sans',sans-serif;font-size:12px;letter-spacing:0.01em;cursor:pointer}
+/* Who am I: an editorial spread. Intro and facts side by side, then experience beside skills. Space separates, not rules. */
+.bd-ab{max-width:1200px;margin:0 auto;padding:104px 32px 120px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);column-gap:clamp(48px,8vw,120px);row-gap:96px}
+.bd-ab-h{margin:0;max-width:15em;font-family:'Literata',serif;font-weight:500;font-size:clamp(30px,3.2vw,42px);line-height:1.12;letter-spacing:-0.02em}
+.bd-ab-sum{margin:28px 0 0;max-width:34em;font-family:'Literata',serif;font-size:19px;line-height:1.65;color:var(--bd-muted)}
+.bd-ab-facts{margin:8px 0 0;display:grid;gap:24px;align-content:start}
+.bd-ab-facts dt,.bd-ab-skills dt{font-size:13px;color:var(--bd-faint)}
+.bd-ab-facts dd{margin:4px 0 0;font-size:16px;line-height:1.5}
+.bd-ab-sub{margin:0;font-family:'Literata',serif;font-weight:500;font-size:22px;line-height:1.2}
+.bd-ab-exp ol{list-style:none;margin:28px 0 0;padding:0;display:grid;gap:36px}
+.bd-ab-when{margin:0;font-size:13px;color:var(--bd-faint);font-variant-numeric:tabular-nums}
+.bd-ab-role{margin:6px 0 0;font-family:'Literata',serif;font-weight:500;font-size:21px;line-height:1.3}
+.bd-ab-line{margin:6px 0 0;max-width:36em;font-family:'Literata',serif;font-size:16px;line-height:1.6;color:var(--bd-muted)}
+.bd-ab-skills dl{margin:28px 0 0;display:grid;gap:22px}
+.bd-ab-skills dd{margin:4px 0 0;font-size:15px;line-height:1.55}
+@media (max-width:900px){
+.bd-ab{grid-template-columns:minmax(0,1fr);row-gap:64px;padding-top:64px;padding-bottom:80px}
+.bd-ab-sum{font-size:17px}
+}
+@media (max-width:760px){
+.bd-hero{height:auto;overflow:visible}
+.bd-stage{position:relative;height:480px}
+.bd-veil{display:none}
+.bd-copy{position:static;width:auto;padding:28px 20px 48px}
+.bd-nav{padding:16px 20px !important}
+.bd-wrap{padding-left:20px !important;padding-right:20px !important}
+}
+/* Literata pass: reading text in the serif too */
+.bd-copy p{font-family:'Literata',serif}
+#work li p{font-family:'Literata',serif;font-size:17px}
+.bd-pause{font-size:13px}
