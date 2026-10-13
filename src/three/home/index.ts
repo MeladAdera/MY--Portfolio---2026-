@@ -18,6 +18,18 @@ export type HomeSceneOptions = {
   /** Render one frame at `time` and never start the loop. */
   manual?: boolean;
   time?: number;
+  /** A humanoid glTF (Mixamo or Ready Player Me skeleton) to use as the figure instead of the drawn rig. */
+  figureUrl?: string;
+  /** Extra scale on that model; 1 fits its legs to the rig's. */
+  figureScale?: number;
+  /** Flip the detected palm direction of the model's hands. */
+  flipPalms?: boolean;
+  /** How much the model's colours are lightened for the pencil shading. Default 3.2. */
+  figureToneLift?: number;
+  /** Names of the model's meshes to leave out, such as headwear. */
+  figureHide?: readonly string[];
+  /** Called after every drawn frame with the loop time. */
+  onFrame?: (time: number) => void;
   /** Cap on the device pixel ratio used for rendering. Default 1. */
   maxPixelRatio?: number;
   /** Disable ambient occlusion. */

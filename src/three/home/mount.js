@@ -37,9 +37,9 @@ import {
 import { bevelBox } from '../shared/geometry';
 import { clamp, lerp, ramp, smoother, UP, V, vlerp } from '../shared/math';
 import { basisQuat } from '../shared/rig';
+import { loadSkinnedRig } from '../shared/skinned-rig';
 import { blobTexture, surface } from '../shared/textures';
 
-const { buildCharacter, poseCharacter, bodyFrame, shoulderOf, dim: DIM } = rig;
 /* ---------- mount ---------- */
 const col = (h) => new THREE.Color(h);
 
@@ -67,6 +67,8 @@ function doorTexture() {
 
 export function mount(canvas, options) {
   options = options || {};
+  /* the body the animation is aimed at; a loaded model replaces these with its own measurements */
+  let { bodyFrame, shoulderOf, dim: DIM } = rig;
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: false,
@@ -219,14 +221,15 @@ export function mount(canvas, options) {
   }
 
   const registry = [];
-  const register = (o, key, isFigure) => {
+  const register = (o, key, isFigure, custom) => {
     registry.push({
       o,
-      phys: phys[key] || o.material,
-      tone: tone[key] || LIGHTTONE,
+      phys: (custom && custom.phys) || phys[key] || o.material,
+      tone: (custom && custom.tone) || tone[key] || LIGHTTONE,
       norm: NormalIdMaterial(isFigure ? 1 : 0),
     });
-    if (phys[key]) o.material = phys[key];
+    if (custom && custom.phys) o.material = custom.phys;
+    else if (phys[key]) o.material = phys[key];
   };
   const add = (o, key, shadow) => {
     o.castShadow = shadow !== false;
@@ -503,23 +506,64 @@ export function mount(canvas, options) {
   blob(TW + 0.5, TD + 0.5, TX, TZ, 0.42);
   const footBlobs = [blob(0.2, 0.36, 0, 0, 0.45), blob(0.2, 0.36, 0, 0, 0.45)];
 
-  const hero = buildCharacter(phys);
-  scene.add(hero.root);
-  /* the figure is drawn by the compositor; its physical body only casts shadows and occludes, never adds colour */
-  for (const k of ['shirt', 'pants', 'skin', 'hair', 'shoe', 'sole', 'feature'])
-    phys[k].colorWrite = false;
-  const keyOf = new Map([
-    [phys.shirt, 'shirt'],
-    [phys.pants, 'pants'],
-    [phys.skin, 'skin'],
-    [phys.hair, 'hair'],
-    [phys.shoe, 'shoe'],
-    [phys.sole, 'sole'],
-    [phys.feature, 'feature'],
-  ]);
-  hero.root.traverse((o) => {
-    if (o.isMesh) register(o, keyOf.get(o.material), true);
-  });
+  /* the figure: the procedural rig, or a humanoid model driven by the same animation. Either
+     way the compositor draws it; its physical body only casts shadows and occludes, never adds
+     colour. Nothing is rendered until the figure is in the scene. */
+  let figure = rig,
+    hero = null;
+  const placeFigure = (f, built, mats) => {
+    figure = f;
+    ({ bodyFrame, shoulderOf, dim: DIM } = f);
+    hero = built;
+    scene.add(hero.root);
+    for (const [o, key, custom] of mats) register(o, key, true, custom);
+  };
+  let figureReady;
+  if (options.figureUrl) {
+    figureReady = loadSkinnedRig(options.figureUrl, rig, {
+      scale: options.figureScale,
+      flipPalms: options.flipPalms,
+      hide: options.figureHide,
+    }).then((f) => {
+      if (disposed) return;
+      const built = f.buildCharacter();
+      const mats = built.meshes.map((o) => {
+        const src = o.material;
+        const physM = src.clone();
+        physM.colorWrite = false;
+        /* the drawing's shading comes from the model's own colours, lifted toward the paper */
+        const lift = options.figureToneLift || 3.2;
+        const toneM = std({
+          map: src.map || null,
+          color: src.map ? new THREE.Color(lift, lift, lift) : src.color,
+          roughness: 1,
+          alphaTest: src.alphaTest,
+          side: THREE.DoubleSide,
+        });
+        return [o, null, { phys: physM, tone: toneM }];
+      });
+      placeFigure(f, built, mats);
+    });
+  } else {
+    const built = rig.buildCharacter(phys);
+    for (const k of ['shirt', 'pants', 'skin', 'hair', 'shoe', 'sole', 'feature'])
+      phys[k].colorWrite = false;
+    const keyOf = new Map([
+      [phys.shirt, 'shirt'],
+      [phys.pants, 'pants'],
+      [phys.skin, 'skin'],
+      [phys.hair, 'hair'],
+      [phys.shoe, 'shoe'],
+      [phys.sole, 'sole'],
+      [phys.feature, 'feature'],
+    ]);
+    const mats = [];
+    built.root.traverse((o) => {
+      if (o.isMesh) mats.push([o, keyOf.get(o.material)]);
+    });
+    placeFigure(rig, built, mats);
+    figureReady = Promise.resolve();
+  }
 
   const cyc = buildCycle();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
@@ -692,7 +736,7 @@ export function mount(canvas, options) {
       const sh = shoulderOf(B, side);
       const wrist = sh
         .clone()
-        .addScaledVector(UP, -0.53)
+        .addScaledVector(UP, -(DIM.upperArm + DIM.forearm) * 0.964)
         .addScaledVector(B.r, side * 0.03)
         .addScaledVector(B.f, 0.035 + side * swing * 0.05);
       return {
@@ -830,7 +874,7 @@ export function mount(canvas, options) {
     look.lerp(V(...cyc.room), cyc.lookRoom(t));
     look.x += Math.sin(g * 0.7) * 0.01;
     look.y += Math.sin(g * 0.53) * 0.008;
-    const { info } = poseCharacter(hero, {
+    const { info } = figure.poseCharacter(hero, {
       P,
       yaw: psi,
       bend,
@@ -931,6 +975,7 @@ export function mount(canvas, options) {
   const bg = new THREE.Color();
   let lastTheme = -1;
   function renderAt(g) {
+    if (!hero) return;
     resize();
     evaluate(g);
     frameCamera(g);
@@ -976,6 +1021,7 @@ export function mount(canvas, options) {
     applyPass('phys');
     drawnClock = g;
     emitTheme();
+    if (options.onFrame) options.onFrame(g);
   }
   /* the page follows the scene's light through this callback, drawn or not */
   function emitTheme() {
@@ -991,6 +1037,8 @@ export function mount(canvas, options) {
   let warming = false;
   async function warmUp() {
     warming = true;
+    await figureReady;
+    if (disposed) return;
     for (const kind of ['phys', 'tone', 'norm']) {
       applyPass(kind);
       await renderer.compileAsync(scene, camera);
@@ -1086,8 +1134,12 @@ export function mount(canvas, options) {
   };
   window.addEventListener('resize', onResize);
 
-  if (options.manual) renderAt(options.time || 0);
-  else
+  if (options.manual) {
+    clock = options.time || 0;
+    figureReady.then(() => {
+      if (!disposed) renderAt(clock);
+    });
+  } else
     warmUp().then(() => {
       if (disposed) return;
       warmed = true;

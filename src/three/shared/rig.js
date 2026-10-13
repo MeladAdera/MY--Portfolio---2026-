@@ -43,12 +43,39 @@ export function handFrame(fingers, palm) {
   return basisQuat(x, y, z);
 }
 
+/* The body frame of a figure with the given dimensions: its facing (f), right (r), the tilted
+   torso axes (ut, ft, rt) and the torso origin O above the pelvis P. */
+export function bodyFrameFor(dim) {
+  return function bodyFrame(P, psi, bend, twist) {
+    const f = V(-Math.sin(psi), 0, -Math.cos(psi));
+    const r = V(Math.cos(psi), 0, -Math.sin(psi));
+    const ut = UP.clone().multiplyScalar(Math.cos(bend)).addScaledVector(f, Math.sin(bend));
+    const ft = f.clone().multiplyScalar(Math.cos(bend)).addScaledVector(UP, -Math.sin(bend));
+    const rt = r.clone();
+    if (twist) {
+      const q = new THREE.Quaternion().setFromAxisAngle(ut, twist);
+      ft.applyQuaternion(q);
+      rt.applyQuaternion(q);
+    }
+    const O = V(P[0], P[1], P[2]).addScaledVector(UP, dim.waist);
+    return { f, r, ut, ft, rt, O, P: V(P[0], P[1], P[2]) };
+  };
+}
+export function shoulderOfFor(dim) {
+  return (B, side) =>
+    B.O.clone()
+      .addScaledVector(B.ut, dim.shoulderUp)
+      .addScaledVector(B.rt, side * dim.shoulderHalf);
+}
+
 /*
  * The character: body, head, hands and feet, plus the pose solver. Both scenes share it;
  * a scene supplies its own body dimensions, hair shell and upper-arm profile.
  */
 export function createRig(spec) {
   const dim = spec.dim;
+  const bodyFrame = bodyFrameFor(dim);
+  const shoulderOf = shoulderOfFor(dim);
 
   function buildCharacter(m) {
     const root = new THREE.Group();
@@ -258,26 +285,6 @@ export function createRig(spec) {
     c.feet = [shoe(), shoe()];
     c.root = root;
     return c;
-  }
-
-  function bodyFrame(P, psi, bend, twist) {
-    const f = V(-Math.sin(psi), 0, -Math.cos(psi));
-    const r = V(Math.cos(psi), 0, -Math.sin(psi));
-    const ut = UP.clone().multiplyScalar(Math.cos(bend)).addScaledVector(f, Math.sin(bend));
-    const ft = f.clone().multiplyScalar(Math.cos(bend)).addScaledVector(UP, -Math.sin(bend));
-    const rt = r.clone();
-    if (twist) {
-      const q = new THREE.Quaternion().setFromAxisAngle(ut, twist);
-      ft.applyQuaternion(q);
-      rt.applyQuaternion(q);
-    }
-    const O = V(P[0], P[1], P[2]).addScaledVector(UP, dim.waist);
-    return { f, r, ut, ft, rt, O, P: V(P[0], P[1], P[2]) };
-  }
-  function shoulderOf(B, side) {
-    return B.O.clone()
-      .addScaledVector(B.ut, dim.shoulderUp)
-      .addScaledVector(B.rt, side * dim.shoulderHalf);
   }
 
   function poseCharacter(c, p) {

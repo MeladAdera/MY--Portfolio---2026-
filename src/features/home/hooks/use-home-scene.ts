@@ -12,6 +12,11 @@ export type SceneStatus = 'playing' | 'paused' | 'complete';
 /* A module-level loader keeps the import stable and three.js in its own chunk. */
 const loadHomeScene = () => import('@/three/home').then((m) => m.mountHomeScene);
 
+/* The engineer: a humanoid glTF with a Ready Player Me / Mixamo skeleton, driven by the
+   scene's own animation. Swap the file in public/models to change who stands at the table;
+   the hat of this avatar is left out. */
+const FIGURE = { url: '/models/engineer.glb', hide: ['Wolf3D_Headwear'] };
+
 /* The scene reports its darkness as it plays; the page colours follow it directly. */
 const paintPage = (k: number) => applyCssVars(document.documentElement, blendPalette(k));
 
@@ -26,7 +31,12 @@ export function useHomeScene(canvasRef: RefObject<HTMLCanvasElement | null>) {
   const { handleRef, state } = useSceneMount<HomeSceneOptions, HomeSceneHandle>(
     canvasRef,
     loadHomeScene,
-    { onTheme: paintPage, onComplete: () => setStatus('complete') },
+    {
+      figureUrl: FIGURE.url,
+      figureHide: FIGURE.hide,
+      onTheme: paintPage,
+      onComplete: () => setStatus('complete'),
+    },
   );
 
   useEffect(() => () => clearCssVars(document.documentElement, PALETTE_VARS), []);

@@ -58,7 +58,11 @@ describe('HeroStage', () => {
     await waitFor(() => expect(figure).toHaveAttribute('data-scene-state', 'ready'));
     expect(mountHomeScene).toHaveBeenCalledWith(
       container.querySelector('canvas'),
-      expect.objectContaining({ onTheme: expect.any(Function), onComplete: expect.any(Function) }),
+      expect.objectContaining({
+        figureUrl: '/models/engineer.glb',
+        onTheme: expect.any(Function),
+        onComplete: expect.any(Function),
+      }),
     );
     expect(screen.getByText(caption)).toHaveClass('sr-only');
 

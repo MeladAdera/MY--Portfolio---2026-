@@ -8,12 +8,25 @@ export const srgb = (hex) =>
   );
 
 /* ---------- drawing compositor ---------- */
+/* View-space normals plus an id in alpha. The skinning chunks make it valid on a skinned
+   mesh too (they compile to nothing on a plain mesh). */
 export const NormalIdMaterial = (id) =>
   new THREE.ShaderMaterial({
     uniforms: { id: { value: id } },
     side: THREE.DoubleSide,
-    vertexShader:
-      'varying vec3 vN; void main(){ vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    vertexShader: `
+      #include <common>
+      #include <skinning_pars_vertex>
+      varying vec3 vN;
+      void main(){
+        #include <beginnormal_vertex>
+        #include <skinbase_vertex>
+        #include <skinnormal_vertex>
+        #include <begin_vertex>
+        #include <skinning_vertex>
+        #include <project_vertex>
+        vN = normalize(normalMatrix * objectNormal);
+      }`,
     fragmentShader:
       'uniform float id; varying vec3 vN; void main(){ vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n; gl_FragColor = vec4(n * 0.5 + 0.5, id); }',
   });
