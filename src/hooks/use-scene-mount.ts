@@ -12,16 +12,19 @@ export type SceneMounter<Options, Handle> = (
  *
  * `load` must be a stable function (declare it at module level); it returns the mount
  * function through a dynamic import so the scene's code is its own chunk and never runs
- * on the server. `options` are read once, when the scene mounts. The handle lives in a
- * ref rather than state because nothing should re-render on a per-frame basis.
+ * on the server. `options` and `onReady` are read once, when the scene mounts. The handle
+ * lives in a ref rather than state because nothing should re-render on a per-frame basis;
+ * `onReady` receives it for one-off setup that needs the scene, such as reading its data.
  */
 export function useSceneMount<Options, Handle extends { dispose(): void }>(
   canvasRef: RefObject<HTMLCanvasElement | null>,
   load: () => Promise<SceneMounter<Options, Handle>>,
   options: Options,
+  onReady?: (handle: Handle) => void,
 ): { handleRef: RefObject<Handle | null>; state: SceneState } {
   const [state, setState] = useState<SceneState>('loading');
   const [initialOptions] = useState(options);
+  const [initialOnReady] = useState(() => onReady);
   const handleRef = useRef<Handle | null>(null);
 
   useEffect(() => {
@@ -32,7 +35,9 @@ export function useSceneMount<Options, Handle extends { dispose(): void }>(
     load()
       .then((mount) => {
         if (cancelled) return;
-        handleRef.current = mount(canvas, initialOptions);
+        const handle = mount(canvas, initialOptions);
+        handleRef.current = handle;
+        initialOnReady?.(handle);
         setState('ready');
       })
       .catch((error: unknown) => {
@@ -46,7 +51,7 @@ export function useSceneMount<Options, Handle extends { dispose(): void }>(
       handleRef.current?.dispose();
       handleRef.current = null;
     };
-  }, [canvasRef, load, initialOptions]);
+  }, [canvasRef, load, initialOptions, initialOnReady]);
 
   return { handleRef, state };
 }
