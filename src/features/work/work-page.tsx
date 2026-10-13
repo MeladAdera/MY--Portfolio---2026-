@@ -8,7 +8,6 @@ import {
   linkedIn,
   mainNav,
   navLabels,
-  profileLinks,
   projects,
   site,
   workPage,
@@ -34,7 +33,7 @@ export function WorkPage() {
             decisionsLabel={workPage.decisionsLabel}
           />
         ))}
-        <ContactSection contact={contact} email={email} linkedIn={linkedIn} links={profileLinks} />
+        <ContactSection contact={contact} email={email} linkedIn={linkedIn} />
       </main>
       <SiteFooter
         name={site.name}

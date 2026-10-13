@@ -27,8 +27,13 @@ test.describe('work page', () => {
       'href',
       'mailto:dev.melad.adera@gmail.com',
     );
-    await expect(page.getByRole('link', { name: 'dev.melad.adera@gmail.com' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Copy' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Download resume' })).toHaveAttribute(
+      'href',
+      '/resume/Melad_Adera.pdf',
+    );
+    const resume = await page.request.get('/resume/Melad_Adera.pdf');
+    expect(resume.ok()).toBe(true);
+    expect(resume.headers()['content-type']).toContain('application/pdf');
     /* the sealed letter plays once the section is in view */
     const letter = page.getByRole('img', { name: /letter slides into an envelope/ });
     await letter.scrollIntoViewIfNeeded();

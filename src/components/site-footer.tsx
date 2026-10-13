@@ -56,12 +56,8 @@ export function SiteFooter({
         </a>
       </Container>
       <div className="border-t border-line">
-        <Container className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 pt-[18px] pb-9">
-          <span className="text-[13px] text-faint">
-            © {year} {name} · {place}
-            <LocalTime timeZone={timeZone} template={clock} />
-          </span>
-          <nav aria-label={navLabel} className="-mr-3 flex flex-wrap items-center gap-x-1">
+        <Container className="flex flex-col items-center gap-y-1 pt-5 pb-9 text-center">
+          <nav aria-label={navLabel} className="flex flex-wrap items-center justify-center gap-x-1">
             {links.map((link) => {
               const kind = socialKind(link.href);
               /* a service with a mark shows the mark; anything else keeps its name */
@@ -82,6 +78,10 @@ export function SiteFooter({
               );
             })}
           </nav>
+          <span className="text-[13px] text-faint">
+            © {year} {name} · {place}
+            <LocalTime timeZone={timeZone} template={clock} />
+          </span>
         </Container>
       </div>
     </footer>

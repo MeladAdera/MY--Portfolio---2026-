@@ -54,6 +54,6 @@ describe('content', () => {
     expect(experience).toHaveLength(3);
     expect(skills).toHaveLength(6);
     expect(hero.cta.href).toBe('#about');
-    expect(contact.copy.idle).toBe('Copy');
+    expect(contact.resume.href).toMatch(/\.pdf$/);
   });
 });

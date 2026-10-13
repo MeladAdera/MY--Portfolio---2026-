@@ -107,12 +107,10 @@ export const contactSchema = z.strictObject({
   pitch: text,
   /** The mail button, "Say hello". */
   hello: text,
-  /** The resume button; left out until the PDF is in `public/`. */
-  resume: z.strictObject({ label: text, href: z.string().startsWith('/') }).optional(),
+  /** The resume button; the PDF lives in `public/`. */
+  resume: z.strictObject({ label: text, href: z.string().startsWith('/') }),
   /** What the sealed-envelope picture shows; its text alternative. */
   envelope: text,
-  copy: z.strictObject({ idle: text, copied: text, failed: text }),
-  status: z.strictObject({ copied: text, failed: text }),
 });
 
 export const storyParagraphSchema = z.strictObject({
