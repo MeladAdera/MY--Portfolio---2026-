@@ -13,7 +13,7 @@ export function SkillsList({ label, groups }: SkillsListProps) {
       <h3 className="font-serif text-[22px] leading-[1.2] font-medium">{label}</h3>
       <DefinitionList
         rows={rows}
-        className="mt-7 grid gap-[22px]"
+        className="mt-7 grid gap-5.5"
         termClassName="text-label text-faint"
         detailClassName="mt-1 text-[15px] leading-[1.55]"
       />

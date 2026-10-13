@@ -13,6 +13,7 @@ import {
   BOARD,
   BTOP,
   COMP,
+  EFFECT_END,
   LINKS,
   LOOP,
   MH,
@@ -72,7 +73,9 @@ export function mount(canvas, options) {
     powerPreference: 'high-performance',
     preserveDrawingBuffer: !!options.preserveDrawingBuffer,
   });
-  const pr = Math.min(window.devicePixelRatio || 1, options.maxPixelRatio || 1.75);
+  /* Rendering is fragment-bound, so the device pixel ratio is capped at 1 by default; the
+     pencil compositor scales its line widths with `pr`, so the drawing stays proportional. */
+  const pr = Math.min(window.devicePixelRatio || 1, options.maxPixelRatio || 1);
   renderer.setPixelRatio(pr);
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.94;
@@ -186,7 +189,8 @@ export function mount(canvas, options) {
   sun.position.set(2.2, 5.6, 2.6);
   sun.target.position.set(0, 0.8, 0.2);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  const shadowMapSize = options.shadowMapSize || 2048;
+  sun.shadow.mapSize.set(shadowMapSize, shadowMapSize);
   Object.assign(sun.shadow.camera, {
     left: -1.8,
     right: 1.8,
@@ -521,7 +525,11 @@ export function mount(canvas, options) {
   const camera = new THREE.PerspectiveCamera(30, 1, 0.05, 80);
 
   /* passes */
-  const toneRT = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
+  /* the tone pass only feeds the compositor's edge and hatch detection, so it is not multisampled by default */
+  const toneRT = new THREE.WebGLRenderTarget(1, 1, {
+    type: THREE.HalfFloatType,
+    samples: options.toneSamples == null ? 0 : options.toneSamples,
+  });
   const normRT = new THREE.WebGLRenderTarget(1, 1);
   normRT.depthTexture = new THREE.DepthTexture(1, 1);
   normRT.texture.minFilter = normRT.texture.magFilter = THREE.NearestFilter;
@@ -532,13 +540,14 @@ export function mount(canvas, options) {
   composer.renderToScreen = false;
   composer.addPass(new RenderPass(scene, camera));
   if (options.ao !== false) {
+    const aoSamples = options.aoSamples || 8;
     const gtao = new GTAOPass(scene, camera, 1, 1);
     gtao.updateGtaoMaterial({
       radius: 0.3,
       distanceExponent: 1.4,
       thickness: 1.2,
       scale: 1.0,
-      samples: 16,
+      samples: aoSamples,
     });
     gtao.updatePdMaterial({
       lumaPhi: 10,
@@ -546,7 +555,7 @@ export function mount(canvas, options) {
       normalPhi: 3,
       radius: 5,
       rings: 2,
-      samples: 16,
+      samples: aoSamples,
     });
     composer.addPass(gtao);
   }
@@ -965,44 +974,149 @@ export function mount(canvas, options) {
     renderer.render(quadScene, quadCam);
     renderer.autoClear = true;
     applyPass('phys');
-    if (options.onTheme && Math.abs(theme - lastTheme) > 0.002) {
+    drawnClock = g;
+    emitTheme();
+  }
+  /* the page follows the scene's light through this callback, drawn or not */
+  function emitTheme() {
+    if (!warming && options.onTheme && Math.abs(theme - lastTheme) > 0.002) {
       lastTheme = theme;
       options.onTheme(theme);
     }
   }
 
+  /* ---- warm-up: compile every material for every pass before the first frame, so nothing
+     stalls later when the signal packets (10.4 s) or the server room (15 s) first appear ---- */
+  let disposed = false;
+  let warming = false;
+  async function warmUp() {
+    warming = true;
+    for (const kind of ['phys', 'tone', 'norm']) {
+      applyPass(kind);
+      await renderer.compileAsync(scene, camera);
+    }
+    /* post-processing programs, geometry buffers and textures only exist once something has
+       been drawn with them: draw the finished state and then the opening state, silently */
+    renderAt(endTime);
+    renderAt(options.start || 0);
+    warming = false;
+  }
+
+  /* ---- one-shot playback: run the effect to its end, leave the last frame, stop the loop ---- */
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const stillTime = options.stillTime == null ? 13.1 : options.stillTime;
-  let running = true,
-    paused = !!options.paused,
+  const endTime = options.endTime == null ? EFFECT_END : options.endTime;
+  const frameInterval = 1000 / (options.fps || 30);
+  let running = false,
+    complete = false,
+    warmed = false,
+    autoStart = !options.paused,
     raf = 0,
     clock = options.start || 0,
-    last = performance.now();
+    last = 0,
+    lastFrame = -Infinity,
+    visible = true,
+    drawnClock = -1;
+  /* While the canvas is scrolled out of view the effect still advances and the page still
+     darkens on time, but nothing is drawn: drawing into a canvas the compositor is not showing
+     stalls the main thread. The current frame is drawn when the canvas comes back. */
+  const observer =
+    typeof IntersectionObserver === 'function'
+      ? new IntersectionObserver((entries) => {
+          visible = entries.some((entry) => entry.isIntersecting);
+          if (visible && !running && drawnClock !== clock) renderAt(clock);
+        })
+      : null;
+  if (observer) observer.observe(canvas);
+  function stop() {
+    running = false;
+    cancelAnimationFrame(raf);
+    raf = 0;
+  }
+  function finish() {
+    stop();
+    complete = true;
+    if (options.onComplete) options.onComplete();
+  }
   function loop(now) {
     if (!running) return;
-    const dt = Math.min(0.05, (now - last) / 1000);
+    raf = requestAnimationFrame(loop);
+    /* pace the work: until the next frame is due this tick does nothing, no GL calls at all */
+    if (now - lastFrame < frameInterval - 1) return;
+    /* the effect keeps to wall-clock time even when frames are slow; the cap only guards
+       against a jump after the tab was hidden */
+    const dt = Math.min(0.25, (now - last) / 1000);
     last = now;
-    if (!paused && !reduce) clock += dt;
-    renderAt(reduce ? stillTime : clock);
+    lastFrame = now;
+    clock = Math.min(endTime, clock + dt);
+    if (visible) renderAt(clock);
+    else {
+      evaluate(clock);
+      emitTheme();
+    }
+    if (clock >= endTime) finish();
+  }
+  function play() {
+    if (complete || reduce) return;
+    /* before the warm-up has finished, play and pause only record the intent */
+    if (!warmed) {
+      autoStart = true;
+      return;
+    }
+    if (running) return;
+    running = true;
+    last = performance.now();
+    lastFrame = -Infinity;
     raf = requestAnimationFrame(loop);
   }
+  function pause() {
+    autoStart = false;
+    stop();
+  }
+  function replay() {
+    if (reduce) return;
+    stop();
+    clock = 0;
+    complete = false;
+    play();
+  }
+  /* a stopped scene must still fit its canvas: redraw the current frame once when it resizes */
+  const onResize = () => {
+    if (running) return;
+    if (canvas.clientWidth !== size.w || canvas.clientHeight !== size.h) renderAt(clock);
+  };
+  window.addEventListener('resize', onResize);
+
   if (options.manual) renderAt(options.time || 0);
-  else raf = requestAnimationFrame(loop);
+  else
+    warmUp().then(() => {
+      if (disposed) return;
+      warmed = true;
+      if (reduce) {
+        /* no motion: the finished composition, drawn once */
+        clock = endTime;
+        renderAt(clock);
+        finish();
+      } else if (autoStart) play();
+      else renderAt(clock);
+    });
 
   return {
     renderAt,
     stats,
     loopLength: LOOP,
+    endTime,
     theme: () => theme,
-    setPaused(v) {
-      paused = !!v;
-    },
-    isPaused() {
-      return paused || reduce;
-    },
+    play,
+    pause,
+    replay,
+    isRunning: () => running || (!warmed && autoStart && !complete && !reduce),
+    isComplete: () => complete,
+    reduced: () => reduce,
     dispose() {
-      running = false;
-      cancelAnimationFrame(raf);
+      disposed = true;
+      stop();
+      if (observer) observer.disconnect();
+      window.removeEventListener('resize', onResize);
       composer.dispose();
       toneRT.dispose();
       normRT.dispose();

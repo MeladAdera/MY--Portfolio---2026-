@@ -14,18 +14,40 @@ test.describe('home page', () => {
     ).toHaveCount(3);
   });
 
-  test('resolves the scene and lets the visitor pause it', async ({ page }) => {
+  test('mounts the scene and lets the visitor pause and resume it', async ({ page }) => {
+    const reducedMotion = await page.evaluate(
+      () => matchMedia('(prefers-reduced-motion: reduce)').matches,
+    );
+    test.skip(reducedMotion, 'the control is hidden under reduced motion');
     await page.goto('/');
     const stage = page.locator('figure[data-scene-state]');
 
     /* Headless runners may lack usable WebGL; either way the mount must settle. */
     await expect(stage).toHaveAttribute('data-scene-state', /ready|failed/, { timeout: 60_000 });
 
-    const button = page.getByRole('button', { name: 'Pause scene' });
-    await button.click();
+    await page.getByRole('button', { name: 'Pause scene' }).click();
     await expect(page.getByRole('button', { name: 'Play scene' })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
+    await expect(stage).toHaveAttribute('data-scene-status', 'paused');
+
+    await page.getByRole('button', { name: 'Play scene' }).click();
+    await expect(page.getByRole('button', { name: 'Pause scene' })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  test('under reduced motion it shows the finished scene and no control', async ({ page }) => {
+    const reducedMotion = await page.evaluate(
+      () => matchMedia('(prefers-reduced-motion: reduce)').matches,
+    );
+    test.skip(!reducedMotion, 'only meaningful in the reduced-motion project');
+    await page.goto('/');
+    const stage = page.locator('figure[data-scene-state]');
+
+    await expect(stage).toHaveAttribute('data-scene-state', /ready|failed/, { timeout: 60_000 });
+    await expect(page.getByRole('button', { name: /scene/ })).toBeHidden();
   });
 });

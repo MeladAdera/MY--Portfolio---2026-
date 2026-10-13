@@ -18,8 +18,8 @@ type HeroSectionProps = {
  */
 export function HeroSection({ hero, siteName, links, navLabel }: HeroSectionProps) {
   return (
-    <section className="relative bg-bg tablet:h-[860px] tablet:overflow-hidden">
-      <HeroStage caption={hero.sceneCaption} pauseLabels={hero.ui} />
+    <section className="relative bg-bg tablet:h-215 tablet:overflow-hidden">
+      <HeroStage caption={hero.sceneCaption} controlLabels={hero.ui} />
       <SiteHeader
         name={siteName}
         links={links}

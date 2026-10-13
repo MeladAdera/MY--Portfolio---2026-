@@ -36,8 +36,8 @@ export const heroSchema = z.strictObject({
   lede: text,
   cta: navLinkSchema.extend({ href: z.string().regex(/^#\S+$/) }),
   sceneCaption: text,
-  /** Labels of the scene's pause toggle. */
-  ui: z.strictObject({ pause: text, play: text }),
+  /** Labels of the scene control: pause while playing, play while paused, replay when done. */
+  ui: z.strictObject({ pause: text, play: text, replay: text }),
 });
 
 export const aboutSchema = z.strictObject({

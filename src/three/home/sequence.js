@@ -100,6 +100,10 @@ export const TM = {
   dip: [22.3, 23.2, 24.0],
 };
 
+/* Where the one-shot effect ends: the room is dark, the camera has pulled back and the
+   figure is looking at the racks, before anything starts to revert at themeDown. */
+export const EFFECT_END = 20.6;
+
 export function buildCycle() {
   const Sr = [0.12, 0.905, 0.48];
   const Srb = [0.13, 0.885, 0.47];

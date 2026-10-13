@@ -5,18 +5,29 @@ import { mount } from './mount';
 export type HomeSceneOptions = {
   /** Called when the scene's light-to-dark blend (0..1) changes by more than 0.002. */
   onTheme?: (k: number) => void;
-  /** Start paused. */
+  /** Called once when the effect reaches its end and the render loop has stopped. */
+  onComplete?: () => void;
+  /** Mount without starting; the first frame is drawn once. */
   paused?: boolean;
   /** Loop time to start from, in seconds. */
   start?: number;
+  /** Loop time at which the effect is complete. Defaults to the scene's own end mark. */
+  endTime?: number;
+  /** Frames rendered per second while the effect runs. Default 30. */
+  fps?: number;
   /** Render one frame at `time` and never start the loop. */
   manual?: boolean;
   time?: number;
-  /** Loop time shown as a still frame when the user prefers reduced motion. Default 13.1. */
-  stillTime?: number;
+  /** Cap on the device pixel ratio used for rendering. Default 1. */
   maxPixelRatio?: number;
   /** Disable ambient occlusion. */
   ao?: boolean;
+  /** Ambient occlusion and denoise sample counts. Default 8. */
+  aoSamples?: number;
+  /** Multisampling of the pencil tone pass. Default 0. */
+  toneSamples?: number;
+  /** Shadow map resolution. Default 2048. */
+  shadowMapSize?: number;
   /** Horizontal view offset as a fraction of the width; defaults depend on the aspect ratio. */
   shift?: number;
   /** Debug camera: [targetX, targetY, targetZ, distance, fov, azimuth?, elevation?]. */
@@ -34,10 +45,20 @@ export type HomeSceneHandle = {
   renderAt(time: number): void;
   stats: HomeSceneStats;
   loopLength: number;
+  /** Loop time at which the effect completes and rendering stops. */
+  endTime: number;
   /** The current light-to-dark blend, 0..1. */
   theme(): number;
-  setPaused(paused: boolean): void;
-  isPaused(): boolean;
+  /** Start or resume the effect. No-op while running, after completion, or under reduced motion. */
+  play(): void;
+  /** Stop the render loop, keeping the current frame on the canvas. */
+  pause(): void;
+  /** Start the effect again from the beginning. */
+  replay(): void;
+  isRunning(): boolean;
+  isComplete(): boolean;
+  /** True when the user prefers reduced motion: only the finished frame is drawn. */
+  reduced(): boolean;
   dispose(): void;
 };
 
