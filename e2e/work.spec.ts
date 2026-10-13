@@ -23,7 +23,15 @@ test.describe('work page', () => {
     await expect(inventory.getByRole('heading', { level: 3, name: 'Decisions' })).toBeVisible();
     await expect(inventory.getByRole('listitem')).toHaveCount(5);
 
+    await expect(page.getByRole('link', { name: 'Say hello' })).toHaveAttribute(
+      'href',
+      'mailto:dev.melad.adera@gmail.com',
+    );
     await expect(page.getByRole('link', { name: 'dev.melad.adera@gmail.com' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Copy' })).toBeVisible();
+    /* the sealed letter plays once the section is in view */
+    const letter = page.getByRole('img', { name: /letter slides into an envelope/ });
+    await letter.scrollIntoViewIfNeeded();
+    await expect(letter).toHaveAttribute('data-sealed', 'true');
   });
 });

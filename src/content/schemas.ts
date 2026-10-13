@@ -103,7 +103,14 @@ export const footerSchema = z.strictObject({
 
 export const contactSchema = z.strictObject({
   label: text,
+  title: text,
   pitch: text,
+  /** The mail button, "Say hello". */
+  hello: text,
+  /** The resume button; left out until the PDF is in `public/`. */
+  resume: z.strictObject({ label: text, href: z.string().startsWith('/') }).optional(),
+  /** What the sealed-envelope picture shows; its text alternative. */
+  envelope: text,
   copy: z.strictObject({ idle: text, copied: text, failed: text }),
   status: z.strictObject({ copied: text, failed: text }),
 });

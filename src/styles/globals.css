@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './theme.css';
 @import './utilities.css';
+@import './envelope.css';
 
 @layer base {
   html {

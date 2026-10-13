@@ -7,6 +7,6 @@ export { about, hero } from './profile';
 export { projects, STATUS_LABEL, workPage } from './projects';
 export { site } from './site';
 export { skills } from './skills';
-export { email, footerLinks, profileLinks } from './social';
+export { email, footerLinks, linkedIn, profileLinks } from './social';
 export { story } from './story';
 export type * from './schemas';

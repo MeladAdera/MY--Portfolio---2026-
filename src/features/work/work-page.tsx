@@ -5,6 +5,7 @@ import {
   email,
   footer,
   footerLinks,
+  linkedIn,
   mainNav,
   navLabels,
   profileLinks,
@@ -33,7 +34,7 @@ export function WorkPage() {
             decisionsLabel={workPage.decisionsLabel}
           />
         ))}
-        <ContactSection contact={contact} email={email} links={profileLinks} />
+        <ContactSection contact={contact} email={email} linkedIn={linkedIn} links={profileLinks} />
       </main>
       <SiteFooter
         name={site.name}
