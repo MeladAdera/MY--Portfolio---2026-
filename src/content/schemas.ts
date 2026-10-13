@@ -32,6 +32,8 @@ export const siteSchema = z.strictObject({
 });
 
 export const heroSchema = z.strictObject({
+  /** The questions typed out over the light room, before the title answers them. */
+  teaser: z.array(text).min(1),
   title: text,
   lede: text,
   cta: navLinkSchema.extend({ href: z.string().regex(/^#\S+$/) }),

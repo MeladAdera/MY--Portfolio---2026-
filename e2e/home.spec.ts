@@ -7,7 +7,10 @@ test.describe('home page', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
       'From ideas to working products.',
     );
-    await expect(page.getByRole('link', { name: 'Who am I?' })).toHaveAttribute('href', '#about');
+    await expect(page.getByRole('link', { name: 'More about me' })).toHaveAttribute(
+      'href',
+      '#about',
+    );
     await expect(page.getByRole('region', { name: /I’m Melad/ })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Contact' })).toBeAttached();
   });

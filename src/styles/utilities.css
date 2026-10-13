@@ -33,10 +33,43 @@
       opacity 0.4s ease,
       translate 0.4s ease;
   }
+  /* the question goes the other way: shown over the light room, gone when the copy is in */
+  .hero-teaser {
+    opacity: calc(1 - var(--hero-reveal, 0));
+    translate: 0 calc(var(--hero-reveal, 0) * -12px);
+    transition:
+      opacity 0.4s ease,
+      translate 0.4s ease;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .hero-reveal {
+    .hero-reveal,
+    .hero-teaser {
       transition: none;
     }
+  }
+}
+
+/* The typewriter's caret: steady while typing, blinking once the questions are complete. */
+.hero-caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.85em;
+  margin-left: 0.1em;
+  vertical-align: -0.08em;
+  background: currentColor;
+  animation: hero-blink 1s steps(2, start) infinite;
+}
+.hero-caret-still {
+  animation: none;
+}
+@keyframes hero-blink {
+  to {
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-caret {
+    animation: none;
   }
 }
 

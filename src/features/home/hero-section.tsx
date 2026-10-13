@@ -2,6 +2,7 @@ import { SiteHeader, type SiteLink } from '@/components/site-header';
 
 import { HeroCopy } from './hero-copy';
 import { HeroStage } from './hero-stage';
+import { HeroTeaser } from './hero-teaser';
 
 import type { Hero } from '@/content';
 
@@ -21,9 +22,10 @@ export function HeroSection({ hero, siteName, links, navLabel }: HeroSectionProp
     <section className="relative bg-bg tablet:h-215 tablet:overflow-hidden">
       {/* without scripts nothing darkens the room, so the copy is shown from the start */}
       <noscript>
-        <style>{'.hero-reveal{opacity:1;translate:none}'}</style>
+        <style>{'.hero-reveal{opacity:1;translate:none}.hero-teaser{display:none}'}</style>
       </noscript>
       <HeroStage caption={hero.sceneCaption} controlLabels={hero.ui} />
+      <HeroTeaser lines={hero.teaser} />
       <SiteHeader
         name={siteName}
         links={links}
