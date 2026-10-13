@@ -106,10 +106,14 @@ describe('HeroStage', () => {
     const { unmount } = render(<HeroStage caption={caption} controlLabels={controlLabels} />);
     await waitFor(() => expect(mountHomeScene).toHaveBeenCalled());
 
+    captured?.onTheme?.(0.5);
+    expect(document.documentElement.style.getPropertyValue('--hero-reveal')).toBe('0.5');
     captured?.onTheme?.(1);
     expect(document.documentElement.style.getPropertyValue('--c-bg')).toBe('#10151b');
+    expect(document.documentElement.style.getPropertyValue('--hero-reveal')).toBe('1');
 
     unmount();
     expect(document.documentElement.style.getPropertyValue('--c-bg')).toBe('');
+    expect(document.documentElement.style.getPropertyValue('--hero-reveal')).toBe('');
   });
 });

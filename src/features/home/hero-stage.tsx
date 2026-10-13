@@ -30,7 +30,7 @@ export function HeroStage({ caption, controlLabels }: HeroStageProps) {
       <figcaption className="sr-only">{caption}</figcaption>
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 hidden veil-hero tablet:block"
+        className="hero-reveal pointer-events-none absolute inset-0 hidden veil-hero tablet:block"
       />
       <SceneControlButton status={status} onToggle={toggle} labels={controlLabels} />
     </figure>

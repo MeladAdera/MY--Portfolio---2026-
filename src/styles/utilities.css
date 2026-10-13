@@ -22,6 +22,24 @@
   );
 }
 
+/* Home hero copy and veil: over the scene (tablets and up) they are hidden while the room is
+   light and appear as it darkens; the scene sets --hero-reveal from 0 to 1 on <html>. On
+   phones the copy sits below the scene and is always shown. */
+@media (min-width: 761px) {
+  .hero-reveal {
+    opacity: var(--hero-reveal, 0);
+    translate: 0 calc((1 - var(--hero-reveal, 0)) * 12px);
+    transition:
+      opacity 0.4s ease,
+      translate 0.4s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-reveal {
+      transition: none;
+    }
+  }
+}
+
 /* Story stage: a top fade and a left fade on wide screens. */
 @utility shade-story {
   background:

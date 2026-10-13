@@ -17,8 +17,13 @@ const loadHomeScene = () => import('@/three/home').then((m) => m.mountHomeScene)
    the hat of this avatar is left out. */
 const FIGURE = { url: '/models/engineer.glb', hide: ['Wolf3D_Headwear'] };
 
-/* The scene reports its darkness as it plays; the page colours follow it directly. */
-const paintPage = (k: number) => applyCssVars(document.documentElement, blendPalette(k));
+/* The hero copy reads this to appear as the page darkens (styles/utilities.css). */
+export const REVEAL_VAR = '--hero-reveal';
+const PAGE_VARS = [...PALETTE_VARS, REVEAL_VAR];
+
+/* The scene reports its darkness as it plays; the page colours and the copy follow it. */
+const paintPage = (k: number) =>
+  applyCssVars(document.documentElement, { ...blendPalette(k), [REVEAL_VAR]: String(k) });
 
 /**
  * Mounts the builder scene and lets the page follow its light. The scene plays once to
@@ -39,7 +44,12 @@ export function useHomeScene(canvasRef: RefObject<HTMLCanvasElement | null>) {
     },
   );
 
-  useEffect(() => () => clearCssVars(document.documentElement, PALETTE_VARS), []);
+  /* without a scene there is nothing to wait for: show the copy */
+  useEffect(() => {
+    if (state === 'failed') applyCssVars(document.documentElement, { [REVEAL_VAR]: '1' });
+  }, [state]);
+
+  useEffect(() => () => clearCssVars(document.documentElement, PAGE_VARS), []);
 
   const toggle = useCallback(() => {
     const scene = handleRef.current;

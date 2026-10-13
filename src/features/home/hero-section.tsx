@@ -19,6 +19,10 @@ type HeroSectionProps = {
 export function HeroSection({ hero, siteName, links, navLabel }: HeroSectionProps) {
   return (
     <section className="relative bg-bg tablet:h-215 tablet:overflow-hidden">
+      {/* without scripts nothing darkens the room, so the copy is shown from the start */}
+      <noscript>
+        <style>{'.hero-reveal{opacity:1;translate:none}'}</style>
+      </noscript>
       <HeroStage caption={hero.sceneCaption} controlLabels={hero.ui} />
       <SiteHeader
         name={siteName}

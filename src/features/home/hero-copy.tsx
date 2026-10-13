@@ -7,7 +7,7 @@ export function HeroCopy({ title, lede, cta }: HeroCopyProps) {
   return (
     <div
       id="top"
-      className="px-5 pt-7 pb-12 tablet:absolute tablet:top-[196px] tablet:inset-gutter-left tablet:w-[min(520px,40%)] tablet:p-0"
+      className="hero-reveal px-5 pt-7 pb-12 tablet:absolute tablet:top-[196px] tablet:inset-gutter-left tablet:w-[min(520px,40%)] tablet:p-0"
     >
       <h1 className="font-serif text-hero font-medium">{title}</h1>
       <p className="mt-[22px] max-w-[30em] font-serif text-[19px] leading-[1.55] text-muted">
