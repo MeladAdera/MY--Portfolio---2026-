@@ -1,7 +1,7 @@
 import { aboutSchema, heroSchema } from './schemas';
 
 export const hero = heroSchema.parse({
-  teaser: ['Let me tell you who am I ... ?', 'What can I build ... ?'],
+  teaser: ['Let me tell you ..', 'Who am I ..?', 'What can I build ?'],
   title: 'From ideas to working products.',
   lede: "I'm a Full Stack Developer building practical web applications and growing my approach to software engineering, one system at a time.",
   cta: { label: 'More about me', href: '#about' },
