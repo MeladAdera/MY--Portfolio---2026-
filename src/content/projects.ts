@@ -27,6 +27,8 @@ export const projects = z.array(projectSchema).parse([
       },
     ],
     proposition: 'A central warehouse and many retail shops, running on one multi-tenant platform.',
+    diagram:
+      'One warehouse feeding three shops, with the credit ledger beneath: every stock movement in one transaction.',
     description:
       'It covers inventory, distribution from the warehouse, sales in the shops, customer credit and business analytics, for warehouse administrators, shop owners and employees.',
     decisions: [
@@ -69,6 +71,8 @@ export const projects = z.array(projectSchema).parse([
       },
     ],
     proposition: 'Sports venue booking for players, venue operators and administrators.',
+    diagram:
+      'Three venues on their own subdomains sharing one platform, used by administrators, operators, staff and players.',
     description:
       'A multi-tenant platform serving the Syrian community through Syria Sport, where people manage bookings, schedules and sports facilities. I worked on both the frontend and the backend.',
     decisions: [
@@ -105,6 +109,7 @@ export const projects = z.array(projectSchema).parse([
       { term: 'Status', detail: STATUS_LABEL['in-progress'] },
     ],
     proposition: 'A task, time and study management app.',
+    diagram: 'Tasks, time and study as three overlapping circles.',
   },
 ]);
 

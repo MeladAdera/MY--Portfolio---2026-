@@ -73,6 +73,8 @@ export const projectSchema = z.strictObject({
   proposition: text,
   description: text.optional(),
   decisions: z.array(decisionSchema).min(1).optional(),
+  /** What the system diagram on the Work page card shows; its text alternative. */
+  diagram: text.optional(),
 });
 
 export const workPageSchema = z.strictObject({

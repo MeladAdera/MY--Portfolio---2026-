@@ -13,26 +13,17 @@ import {
 
 import { ContactSection } from './contact-section';
 import { ProjectArticle } from './project-article';
+import { ProjectCards } from './project-cards';
 import { WorkIntro } from './work-intro';
 
-/** The Work page: intro, one article per project, then contact. */
+/** The Work page: intro, the project cards, one article per project, then contact. */
 export function WorkPage() {
-  const index = [
-    ...projects.map((project) => ({ label: project.name, href: `#${project.id}` })),
-    { label: contact.label, href: '#contact' },
-  ];
-
   return (
     <>
       <SiteHeader name={site.name} links={mainNav} navLabel={navLabels.main} currentPath="/work" />
       <main>
-        <WorkIntro
-          kicker={workPage.kicker}
-          title={workPage.title}
-          lede={workPage.lede}
-          index={index}
-          indexLabel={workPage.indexLabel}
-        />
+        <WorkIntro kicker={workPage.kicker} title={workPage.title} lede={workPage.lede} />
+        <ProjectCards projects={projects} label={workPage.indexLabel} />
         {projects.map((project) => (
           <ProjectArticle
             key={project.id}
