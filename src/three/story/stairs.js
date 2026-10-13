@@ -42,39 +42,40 @@ export const STAND_Y = 0.925;
 /* The six story stops: where he stops, how his feet stand, how long (reading time when the page plays itself)
    and what his gaze does while he is there. Spread so each stop is roughly one metre higher than the last. */
 export const PAUSES = [
-  { at: 'start', dur: 7, look: 'up' } /* 1 Where it all began — low on the first flight */,
+  { at: 'start', dur: 4.5, look: 'up' } /* 1 Where it all began — low on the first flight */,
   {
     at: { flight: 0, landingStep: 2 },
     together: true,
-    dur: 13,
+    dur: 8.5,
     look: 'up',
   } /* 2 Searching for meaning — first landing */,
   {
     at: { flight: 1, tread: 5 },
     together: false,
-    dur: 13,
+    dur: 8.5,
     look: 'aside',
   } /* 3 A turning point — on the stairs */,
   {
     at: { flight: 1, landingStep: 3 },
     together: true,
-    dur: 15,
+    dur: 10,
     look: 'down',
   } /* 4 My first step — before the last flight */,
   {
     at: { flight: 2, tread: 6 },
     together: false,
-    dur: 17,
+    dur: 11,
     look: 'heavy',
   } /* 5 The journey — halfway up the last flight */,
   {
     at: { flight: 2, landingStep: 5 },
     together: true,
-    dur: 16,
+    dur: 10.5,
     look: 'out',
   } /* 6 The goal — before the opening */,
 ];
-export const PACE = { tread: 0.98, landing: 0.84, together: 0.78, support: 0.12 };
+/* seconds per footfall; a brisk but unhurried climb */
+export const PACE = { tread: 0.7, landing: 0.62, together: 0.58, support: 0.1 };
 
 export function buildClimb() {
   const parts = STAIRS.parts;

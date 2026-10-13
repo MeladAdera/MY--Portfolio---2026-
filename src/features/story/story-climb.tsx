@@ -18,9 +18,9 @@ import type { StoryFrameState, StorySceneHandle } from '@/three/story';
 type StoryClimbProps = { story: Story };
 
 /**
- * The climb: a section twelve and a half screens tall with a stage stuck to the top of the
- * viewport. Scrolling through the section moves the story; the scene reports every drawn
- * frame and this component writes it into the text, the rail and the hint.
+ * The climb: a section eight screens tall with a stage stuck to the top of the viewport.
+ * Scrolling through the section moves the story; the scene reports every drawn frame and
+ * this component writes it into the text, the rail and the hint.
  */
 export function StoryClimb({ story }: StoryClimbProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -46,7 +46,7 @@ export function StoryClimb({ story }: StoryClimbProps) {
   const { playing, toggle } = useAutoScroll(sectionRef, handleRef);
 
   return (
-    <section ref={sectionRef} aria-label={story.sectionLabel} className="relative h-[1250vh]">
+    <section ref={sectionRef} aria-label={story.sectionLabel} className="relative h-[800vh]">
       <figure
         ref={stageRef}
         data-scene-state={state}
