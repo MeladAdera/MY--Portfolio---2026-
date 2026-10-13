@@ -1,0 +1,103 @@
+/*
+ * Design tokens.
+ *
+ * Palette: semantic colour variables. Home starts light and is blended toward dark at
+ * runtime by inline variables on <html> (see features/home/lib/palette-blend.ts).
+ * Work and Story are fixed dark through data-palette on their root layout.
+ */
+:root,
+[data-palette='light'] {
+  --c-bg: #eeeae3;
+  --c-surface: #f5f2ec;
+  --c-fg: #16171a;
+  --c-body: #16171a;
+  --c-muted: #3f4146;
+  --c-faint: #5e5a53;
+  --c-line: #dcd6cc;
+  --c-btn-bg: #16171a;
+  --c-btn-fg: #f2efea;
+  --c-accent: #4c9bea;
+}
+
+[data-palette='dark'] {
+  --c-bg: #0d1217;
+  --c-surface: #141a21;
+  --c-fg: #e9edf1;
+  --c-body: #c9d1d8;
+  --c-muted: #b3bdc7;
+  --c-faint: #8f9aa5;
+  --c-line: #27303a;
+  --c-btn-bg: #e9edf1;
+  --c-btn-fg: #0d1217;
+  --c-accent: #4c9bea;
+}
+
+/* "inline" makes utilities read the live variable, which the Home runtime blend relies on. */
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-fg: var(--c-fg);
+  --color-body: var(--c-body);
+  --color-muted: var(--c-muted);
+  --color-faint: var(--c-faint);
+  --color-line: var(--c-line);
+  --color-accent: var(--c-accent);
+  --color-btn: var(--c-btn-bg);
+  --color-btn-fg: var(--c-btn-fg);
+
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-literata), Georgia, serif;
+}
+
+@theme {
+  /* Legacy cut at max-width 760px and 900px; base styles are the phone layout. */
+  --breakpoint-*: initial;
+  --breakpoint-tablet: 761px;
+  --breakpoint-desktop: 901px;
+
+  --container-site: 1200px;
+  --spacing-gutter: 2rem;
+
+  /* Type scale, copied from the legacy stylesheets. */
+  --text-hero: clamp(42px, 5.2vw, 74px);
+  --text-hero--line-height: 1;
+  --text-hero--letter-spacing: -0.03em;
+
+  --text-story-title: clamp(46px, 5.6vw, 82px);
+  --text-story-title--line-height: 0.98;
+  --text-story-title--letter-spacing: -0.03em;
+
+  --text-work-title: clamp(36px, 4vw, 54px);
+  --text-work-title--line-height: 1.06;
+  --text-work-title--letter-spacing: -0.025em;
+
+  --text-project: clamp(34px, 3.6vw, 48px);
+  --text-project--line-height: 1.08;
+  --text-project--letter-spacing: -0.02em;
+
+  --text-about: clamp(30px, 3.2vw, 42px);
+  --text-about--line-height: 1.12;
+  --text-about--letter-spacing: -0.02em;
+
+  --text-wip: clamp(30px, 3.4vw, 44px);
+  --text-wip--line-height: 1.05;
+  --text-wip--letter-spacing: -0.02em;
+
+  --text-step: clamp(30px, 2.8vw, 40px);
+  --text-step--line-height: 1.08;
+  --text-step--letter-spacing: -0.015em;
+
+  --text-pitch: clamp(24px, 2.4vw, 30px);
+  --text-pitch--line-height: 1.4;
+
+  --text-mail: clamp(24px, 3vw, 40px);
+  --text-mail--line-height: 1.2;
+  --text-mail--letter-spacing: -0.015em;
+
+  --text-label: 13px;
+  --text-label--line-height: 1.6;
+
+  --text-kicker: 12px;
+  --text-kicker--line-height: 1.6;
+  --text-kicker--letter-spacing: 0.01em;
+}

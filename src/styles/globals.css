@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+@import './theme.css';
+@import './utilities.css';
+
+@layer base {
+  html {
+    background-color: var(--c-bg);
+  }
+
+  body {
+    @apply bg-bg font-sans text-[16px] leading-[1.6] text-fg;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 3px;
+  }
+}

@@ -1,0 +1,57 @@
+/*
+ * The few visual pieces that are too involved for inline utility classes:
+ * gutter-aligned absolute positioning, the two canvas overlays and two pseudo-element marks.
+ */
+
+/* Align an absolutely positioned block with the 1200px container's inner edge. */
+@utility inset-gutter-left {
+  left: max(32px, calc((100% - 1200px) / 2 + 32px));
+}
+
+@utility inset-gutter-right {
+  right: max(32px, calc((100% - 1200px) / 2 + 32px));
+}
+
+/* Home hero: a left-to-right veil in the live page colour so the copy stays readable over the scene. */
+@utility veil-hero {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--c-bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--c-bg) 66%, transparent) 34%,
+    transparent 52%
+  );
+}
+
+/* Story stage: a top fade and a left fade on wide screens. */
+@utility shade-story {
+  background:
+    linear-gradient(180deg, rgb(13 18 23 / 0.78) 0, rgb(13 18 23 / 0) 120px),
+    linear-gradient(90deg, rgb(13 18 23 / 0.9) 0%, rgb(13 18 23 / 0.74) 34%, rgb(13 18 23 / 0) 58%);
+}
+
+/* Story stage on phones: the canvas is 48vh tall and fades into the page below it. */
+@utility shade-story-mobile {
+  background:
+    linear-gradient(180deg, rgb(13 18 23 / 0.78) 0, rgb(13 18 23 / 0) 90px),
+    linear-gradient(180deg, rgb(13 18 23 / 0) calc(48vh - 80px), #0d1217 48vh);
+}
+
+/* "Scroll to climb" hint: a thin fading line below the text. */
+@utility hint-tail {
+  &::after {
+    content: '';
+    width: 1px;
+    height: 34px;
+    background: linear-gradient(var(--c-faint), transparent);
+  }
+}
+
+/* "Step N" label: a short accent dash before the text. */
+@utility step-dash {
+  &::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: var(--c-accent);
+  }
+}
