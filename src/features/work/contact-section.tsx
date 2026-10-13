@@ -1,7 +1,6 @@
 import { Container } from '@/components/container';
 
 import { CopyEmailButton } from './copy-email-button';
-import { LocalTime } from './local-time';
 
 import type { SiteLink } from '@/components/site-header';
 import type { Contact } from '@/content';
@@ -10,49 +9,48 @@ type ContactSectionProps = {
   contact: Contact;
   email: string;
   links: readonly SiteLink[];
-  place: string;
-  timeZone: string;
 };
 
-/** The closing entry of the page: the same two columns as a project, so contact reads as part of the work. */
-export function ContactSection({ contact, email, links, place, timeZone }: ContactSectionProps) {
+/**
+ * The closing entry of the page: what I'm looking for, said plainly, then the email large
+ * with an accent rule under it, and the profiles.
+ */
+export function ContactSection({ contact, email, links }: ContactSectionProps) {
   return (
     <Container
       as="section"
       id="contact"
       aria-labelledby="contact-title"
-      className="grid grid-cols-1 gap-y-6 pt-30 pb-22 tablet:pt-44 tablet:pb-32 desktop:grid-cols-[minmax(0,250px)_minmax(0,1fr)] desktop:gap-x-[clamp(40px,7vw,104px)] desktop:gap-y-0"
+      className="pt-30 pb-22 tablet:pt-44 tablet:pb-32"
     >
-      <h2 id="contact-title" className="text-label font-normal text-faint desktop:pt-3">
+      <h2 id="contact-title" className="text-label font-normal text-accent">
         {contact.label}
       </h2>
-      <div className="max-w-[680px]">
-        <p className="max-w-[22em] font-serif text-pitch text-fg">{contact.pitch}</p>
-        <p className="mt-9 flex flex-wrap items-baseline gap-x-6 gap-y-3">
+      <p className="mt-5 max-w-[26em] text-[clamp(22px,2.4vw,30px)] leading-[1.4] font-medium text-fg">
+        {contact.pitch}
+      </p>
+      <div className="mt-10 flex flex-wrap items-end gap-x-6 gap-y-4">
+        <div className="max-w-[520px] grow border-b border-line">
           <a
             href={`mailto:${email}`}
-            className="font-serif text-mail font-medium [overflow-wrap:anywhere] text-fg underline decoration-accent decoration-2 underline-offset-[0.22em] transition-colors duration-200 hover:text-white motion-reduce:transition-none"
+            className="-mb-px inline-block border-b-2 border-accent pb-2 text-[clamp(24px,3vw,36px)] leading-[1.2] font-medium tracking-[-0.015em] [overflow-wrap:anywhere] text-fg transition-colors duration-200 hover:text-white motion-reduce:transition-none"
           >
             {email}
           </a>
-          <CopyEmailButton text={email} labels={contact.copy} messages={contact.status} />
-        </p>
-        <p className="mt-[22px] flex gap-7 text-[16px]">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="py-[10px] underline decoration-line underline-offset-[0.3em] hover:decoration-accent"
-            >
-              {link.label}
-            </a>
-          ))}
-        </p>
-        <p className="mt-[22px] text-[15px] text-faint">
-          {place}
-          <LocalTime timeZone={timeZone} template={contact.clock} />
-        </p>
+        </div>
+        <CopyEmailButton text={email} labels={contact.copy} messages={contact.status} />
       </div>
+      <p className="mt-8 flex gap-7 text-[15px] text-muted">
+        {links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className="py-[10px] transition-colors duration-200 hover:text-fg motion-reduce:transition-none"
+          >
+            {link.label}
+          </a>
+        ))}
+      </p>
     </Container>
   );
 }

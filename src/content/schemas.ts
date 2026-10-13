@@ -87,15 +87,25 @@ export const workPageSchema = z.strictObject({
   decisionsLabel: text,
 });
 
+/** The paths of the three pages; the header marks the current one, the footer picks the next. */
+export const pagePathSchema = z.enum(['/', '/work', '/story']);
+
+export const footerSchema = z.strictObject({
+  /** The word above the big link, "Next". */
+  nextLabel: text,
+  /** Where each page leads at its end; any href, a page or a mailto. */
+  next: z.record(pagePathSchema, z.strictObject({ label: text, href: z.string().min(1) })),
+  /** Follows the place name; `{time}` and `{zone}` are filled by the live clock. */
+  clock: text.refine((s) => s.includes('{time}') && s.includes('{zone}'), {
+    message: 'must contain {time} and {zone}',
+  }),
+});
+
 export const contactSchema = z.strictObject({
   label: text,
   pitch: text,
   copy: z.strictObject({ idle: text, copied: text, failed: text }),
   status: z.strictObject({ copied: text, failed: text }),
-  /** Sentence after the place name; `{time}` and `{zone}` are filled by the live clock. */
-  clock: text.refine((s) => s.includes('{time}') && s.includes('{zone}'), {
-    message: 'must contain {time} and {zone}',
-  }),
 });
 
 export const storyParagraphSchema = z.strictObject({
@@ -134,6 +144,8 @@ export type Decision = z.infer<typeof decisionSchema>;
 export type Project = z.infer<typeof projectSchema>;
 export type WorkPage = z.infer<typeof workPageSchema>;
 export type Contact = z.infer<typeof contactSchema>;
+export type PagePath = z.infer<typeof pagePathSchema>;
+export type Footer = z.infer<typeof footerSchema>;
 export type StoryParagraph = z.infer<typeof storyParagraphSchema>;
 export type StoryStep = z.infer<typeof storyStepSchema>;
 export type Story = z.infer<typeof storySchema>;

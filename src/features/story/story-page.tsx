@@ -1,6 +1,6 @@
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
-import { footerLinks, mainNav, navLabels, site, story } from '@/content';
+import { footer, footerLinks, mainNav, navLabels, site, story } from '@/content';
 
 import { StoryClimb } from './story-climb';
 
@@ -22,6 +22,10 @@ export function StoryPage() {
         id="contact"
         name={site.name}
         year={site.year}
+        place={`${site.location.city}, ${site.location.country}`}
+        timeZone={site.location.timeZone}
+        clock={footer.clock}
+        next={{ kicker: footer.nextLabel, ...footer.next['/story'] }}
         links={footerLinks}
         navLabel={navLabels.contact}
       />

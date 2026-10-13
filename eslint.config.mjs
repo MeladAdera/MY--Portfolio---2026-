@@ -70,7 +70,7 @@ export default defineConfig([
               allow: to('features', 'components', 'hooks', 'lib', 'content', 'styles'),
             },
             { from: from('features'), allow: to('components', 'hooks', 'lib', 'three', 'content') },
-            { from: from('components'), allow: to('lib') },
+            { from: from('components'), allow: to('hooks', 'lib') },
             { from: from('hooks'), allow: to('lib') },
 
             /* Packages: allowed everywhere, except across the two framework boundaries. */

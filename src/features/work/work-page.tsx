@@ -3,6 +3,8 @@ import { SiteHeader } from '@/components/site-header';
 import {
   contact,
   email,
+  footer,
+  footerLinks,
   mainNav,
   navLabels,
   profileLinks,
@@ -31,15 +33,18 @@ export function WorkPage() {
             decisionsLabel={workPage.decisionsLabel}
           />
         ))}
-        <ContactSection
-          contact={contact}
-          email={email}
-          links={profileLinks}
-          place={`${site.location.city}, ${site.location.country}`}
-          timeZone={site.location.timeZone}
-        />
+        <ContactSection contact={contact} email={email} links={profileLinks} />
       </main>
-      <SiteFooter name={site.name} year={site.year} />
+      <SiteFooter
+        name={site.name}
+        year={site.year}
+        place={`${site.location.city}, ${site.location.country}`}
+        timeZone={site.location.timeZone}
+        clock={footer.clock}
+        next={{ kicker: footer.nextLabel, ...footer.next['/work'] }}
+        links={footerLinks}
+        navLabel={navLabels.contact}
+      />
     </>
   );
 }
