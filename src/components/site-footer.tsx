@@ -1,7 +1,9 @@
 import { cn } from '@/lib/cn';
+import { socialKind } from '@/lib/social';
 
 import { Container } from './container';
 import { LocalTime } from './local-time';
+import { SocialIcon } from './social-icon';
 
 import type { SiteLink } from './site-header';
 
@@ -59,12 +61,26 @@ export function SiteFooter({
             © {year} {name} · {place}
             <LocalTime timeZone={timeZone} template={clock} />
           </span>
-          <nav aria-label={navLabel} className="flex flex-wrap gap-x-6 text-[15px]">
-            {links.map((link) => (
-              <a key={link.href} href={link.href} className="py-3 underline">
-                {link.label}
-              </a>
-            ))}
+          <nav aria-label={navLabel} className="-mr-3 flex flex-wrap items-center gap-x-1">
+            {links.map((link) => {
+              const kind = socialKind(link.href);
+              /* a service with a mark shows the mark; anything else keeps its name */
+              return kind ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  aria-label={link.label}
+                  title={link.label}
+                  className="flex h-11 w-11 items-center justify-center text-muted transition-colors duration-200 hover:text-fg motion-reduce:transition-none"
+                >
+                  <SocialIcon kind={kind} className="h-5 w-5" />
+                </a>
+              ) : (
+                <a key={link.href} href={link.href} className="px-3 py-3 text-[15px] underline">
+                  {link.label}
+                </a>
+              );
+            })}
           </nav>
         </Container>
       </div>

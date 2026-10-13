@@ -41,7 +41,9 @@ describe('SiteFooter', () => {
     renderFooter();
     expect(
       screen.getByText(
-        (_, el) => el?.textContent === '© 2026 Melad Adera · Lattakia, Syria · 14:05 (GMT+3)',
+        (_, el) =>
+          el?.tagName === 'SPAN' &&
+          el.textContent === '© 2026 Melad Adera · Lattakia, Syria · 14:05 (GMT+3)',
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Contact' })).toBeInTheDocument();
