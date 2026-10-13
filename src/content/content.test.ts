@@ -7,8 +7,8 @@ import {
   experience,
   footerLinks,
   hero,
+  linkedIn,
   mainNav,
-  profileLinks,
   projects,
   site,
   skills,
@@ -37,10 +37,16 @@ describe('content', () => {
     expect(quotes).toHaveLength(1);
   });
 
-  it('keeps navigation internal and the mailto in sync with the email', () => {
+  it('keeps navigation internal and lists the four profiles in the footer', () => {
     for (const link of mainNav) expect(link.href.startsWith('/')).toBe(true);
-    expect(footerLinks[0]?.href).toBe(`mailto:${email}`);
-    expect(footerLinks.slice(1)).toEqual(profileLinks);
+    expect(footerLinks.map((link) => link.label)).toEqual([
+      'Instagram',
+      'Facebook',
+      'LinkedIn',
+      'GitHub',
+    ]);
+    expect(footerLinks).toContainEqual(linkedIn);
+    expect(email).toMatch(/@/);
   });
 
   it('carries the legacy page titles', () => {

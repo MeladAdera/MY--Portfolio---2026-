@@ -4,21 +4,17 @@ import { socialLinkSchema } from './schemas';
 
 export const email = 'dev.melad.adera@gmail.com';
 
-const links = z.array(socialLinkSchema);
-
 export const linkedIn = socialLinkSchema.parse({
   label: 'LinkedIn',
   href: 'https://www.linkedin.com/in/melad-adera',
 });
 
-/** LinkedIn and GitHub: the profiles under the contact section. */
-export const profileLinks = links.parse([
-  linkedIn,
-  { label: 'GitHub', href: 'https://github.com/MeladAdera' },
-]);
-
-/** Email first, then the profiles: the footer nav on every page. */
-export const footerLinks = links.parse([
-  { label: 'Email', href: `mailto:${email}` },
-  ...profileLinks,
-]);
+/** The profiles in the footer, in this order; each is shown as its mark. */
+export const footerLinks = z
+  .array(socialLinkSchema)
+  .parse([
+    { label: 'Instagram', href: 'https://www.instagram.com/melad.adera/' },
+    { label: 'Facebook', href: 'https://www.facebook.com/melad.adera' },
+    linkedIn,
+    { label: 'GitHub', href: 'https://github.com/MeladAdera' },
+  ]);

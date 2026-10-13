@@ -5,7 +5,7 @@ import { SocialIcon } from './social-icon';
 
 describe('SocialIcon', () => {
   it('draws a decorative mark for each service', () => {
-    for (const kind of ['email', 'linkedin', 'github'] as const) {
+    for (const kind of ['email', 'instagram', 'facebook', 'linkedin', 'github'] as const) {
       const { container, unmount } = render(<SocialIcon kind={kind} />);
       const svg = container.querySelector('svg');
       expect(svg).toHaveAttribute('aria-hidden', 'true');
